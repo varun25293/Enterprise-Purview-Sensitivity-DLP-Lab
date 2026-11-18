@@ -1,4 +1,10 @@
-﻿# Enterprise Microsoft Purview Sensitivity Labels & DLP Governance Lab
+$repoPath = "C:\Users\Administrator\Desktop\Enterprise-Purview-Sensitivity-DLP-Lab"
+Set-Location $repoPath
+
+git pull origin main --rebase
+
+$readmeContent = @'
+# Enterprise Microsoft Purview Sensitivity Labels & DLP Governance Lab
 
 ## Executive Summary
 This repository documents an end-to-end **Information Protection & Data Loss Prevention (DLP)** architecture implemented in the `ApexModernWork.onmicrosoft.com` Microsoft 365 tenant. The lab enforces document-level AES encryption with dynamic watermarking alongside perimeter email DLP blocking to prevent unauthorized external transmission of confidential financial data.
@@ -21,14 +27,14 @@ This repository documents an end-to-end **Information Protection & Data Loss Pre
 * Created and published the `Confidential - Finance` sensitivity label with encryption and content marking enabled.
 * Verified real-time label application, diagonal watermarking, and access control on `Q4-Corporate-Budget-2026.docx` in SharePoint / Word Online.
 
-![Sensitivity Label Configuration](01-Sensitivity-Labels-Encryption/01-purview-sensitivity-label-config.png)
-![Encrypted Word Document Watermark](01-Sensitivity-Labels-Encryption/02-encrypted-document-watermark-proof.png)
+![Sensitivity Label Configuration](01-Sensitivity-Labels-And-Encryption/01-purview-sensitivity-label-config.png)
+![Encrypted Word Document Watermark](01-Sensitivity-Labels-And-Encryption/02-sharepoint-file-labeled-encrypted.png)
 
 ### 2. Purview DLP Policy & Outbound Email Blocking Enforcement
 * Configured `DLP-Block-External-Financial-Sharing` across M365 workloads and layered `DLP-Block-External-Confidential-Finance-ETR` in Exchange Online for zero-latency outbound enforcement.
 * Tested outbound transmission from `pilotuser2@ApexModernWork.onmicrosoft.com` to an external recipient (`varun25293@gmail.com`) with subject `Q4 Budget Confidential` — verified immediate `5.7.1` delivery refusal.
 
-![Purview DLP Policy Configuration](02-Purview-DLP-And-Enforcement/03-purview-dlp-policy-setup.png)
+![Purview DLP Policy Configuration](02-Purview-DLP-And-Enforcement/03-purview-dlp-policy-config.png)
 ![External Email DLP Block NDR](02-Purview-DLP-And-Enforcement/04-dlp-policy-tip-external-block.png)
 
 ---
@@ -36,3 +42,10 @@ This repository documents an end-to-end **Information Protection & Data Loss Pre
 ## Troubleshooting & Production Engineering Takeaways
 * **Purview Multi-Workload Sync Latency:** Newly created or modified Purview DLP policies take up to **2 hours** (and up to 24 hours for group-scoped policies) to propagate across Exchange, SharePoint, OneDrive, and Teams. Layering an Exchange Online Transport Rule (`Priority 0`) provides immediate perimeter protection during policy propagation.
 * **OWA vs. SMTP Inbound Scope:** In Exchange Transport Rules, `FromScope: InOrganization` applies to inbound connector submissions rather than direct Outlook Web (OWA) client submissions; targeting explicit user/group conditions ensures deterministic evaluation for internal webmail traffic.
+'@
+
+Set-Content -Path "$repoPath\README.md" -Value $readmeContent -Encoding UTF8
+
+git add README.md
+git commit -m "Fix exact screenshot folder and filenames in README.md"
+git push origin main
