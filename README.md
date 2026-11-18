@@ -1,9 +1,3 @@
-$repoPath = "C:\Users\Administrator\Desktop\Enterprise-Purview-Sensitivity-DLP-Lab"
-Set-Location $repoPath
-
-git pull origin main --rebase
-
-$readmeContent = @'
 # Enterprise Microsoft Purview Sensitivity Labels & DLP Governance Lab
 
 ## Executive Summary
@@ -42,10 +36,3 @@ This repository documents an end-to-end **Information Protection & Data Loss Pre
 ## Troubleshooting & Production Engineering Takeaways
 * **Purview Multi-Workload Sync Latency:** Newly created or modified Purview DLP policies take up to **2 hours** (and up to 24 hours for group-scoped policies) to propagate across Exchange, SharePoint, OneDrive, and Teams. Layering an Exchange Online Transport Rule (`Priority 0`) provides immediate perimeter protection during policy propagation.
 * **OWA vs. SMTP Inbound Scope:** In Exchange Transport Rules, `FromScope: InOrganization` applies to inbound connector submissions rather than direct Outlook Web (OWA) client submissions; targeting explicit user/group conditions ensures deterministic evaluation for internal webmail traffic.
-'@
-
-Set-Content -Path "$repoPath\README.md" -Value $readmeContent -Encoding UTF8
-
-git add README.md
-git commit -m "Fix exact screenshot folder and filenames in README.md"
-git push origin main
